@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentRepositoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">REST_DZ</a> &gt; <a href="index.source.html" class="el_package">org.example.repository.impl</a> &gt; <span class="el_source">StudentRepositoryImpl.java</span></div><h1>StudentRepositoryImpl.java</h1><pre class="source lang-java linenums">package org.example.repository.impl;
+
+import org.example.db.DBConnector;
+import org.example.db.DBConnectorImpl;
+import org.example.entity.*;
+import org.example.repository.Interfaces.*;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class StudentRepositoryImpl implements StudentRepository {
+    private static final String INSERT = &quot;INSERT INTO students (student_name, student_surname, group_id) VALUES (?,?,?)&quot;;
+    private static final String UPDATE = &quot;UPDATE students SET student_name = ?, student_surname = ?, group_id = ? WHERE student_id = ?&quot;;
+    private static final String DELETE = &quot;DELETE FROM students WHERE student_id = ?&quot;;
+    private static final String FIND_BY_ID = &quot;SELECT student_id, student_name, student_surname, group_id FROM students WHERE student_id = ? LIMIT 1&quot;;
+    private static final String EXIST_BY_ID = &quot;SELECT exists (SELECT 1 FROM students WHERE student_id = ? LIMIT 1)&quot;;
+    private static StudentRepository instance;
+<span class="nc" id="L20">    private final DBConnector connectionManager = DBConnectorImpl.getInstance();</span>
+<span class="nc" id="L21">    private final StudentToOptionalClassRepository studentToOptionalClassRepository = StudentToOptionalClassRepositoryImpl.getInstance();</span>
+<span class="nc" id="L22">    private final GroupRepository groupRepository = GroupRepositoryImpl.getInstance();</span>
+<span class="nc" id="L23">    private final OptionalClassRepository optionalClassRepository = OptionalClassRepositoryImpl.getInstance();</span>
+
+<span class="nc" id="L25">    private StudentRepositoryImpl() {</span>
+<span class="nc" id="L26">    }</span>
+
+    public static synchronized StudentRepository getInstance() {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L30">            instance = new StudentRepositoryImpl();</span>
+        }
+<span class="nc" id="L32">        return instance;</span>
+    }
+    @Override
+    public Student insert(Student student) {
+<span class="nc" id="L36">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L37">             PreparedStatement preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {</span>
+
+<span class="nc" id="L39">            preparedStatement.setString(1, student.getFirstName());</span>
+<span class="nc" id="L40">            preparedStatement.setString(2, student.getSurname());</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">            if (student.getGroup() == null) {</span>
+<span class="nc" id="L42">                preparedStatement.setNull(3, Types.NULL);</span>
+            } else {
+<span class="nc" id="L44">                preparedStatement.setLong(3, student.getGroup().getId());</span>
+            }
+<span class="nc" id="L46">            preparedStatement.executeUpdate();</span>
+
+<span class="nc" id="L48">            ResultSet resultSet = preparedStatement.getGeneratedKeys();</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            if (resultSet.next()) {</span>
+<span class="nc" id="L50">                student = new Student(</span>
+<span class="nc" id="L51">                        resultSet.getLong(&quot;student_id&quot;),</span>
+<span class="nc" id="L52">                        student.getFirstName(),</span>
+<span class="nc" id="L53">                        student.getSurname(),</span>
+<span class="nc" id="L54">                        student.getGroup(),</span>
+                        null
+                );
+            }
+<span class="nc" id="L58">            student.getOptionalClassList();</span>
+<span class="nc" id="L59">        } catch (SQLException e) {</span>
+<span class="nc" id="L60">            throw new RuntimeException(e);</span>
+<span class="nc" id="L61">        }</span>
+
+<span class="nc" id="L63">        return student;</span>
+    }
+
+
+    @Override
+    public void update(Student student) {
+<span class="nc" id="L69">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L70">             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE)) {</span>
+
+<span class="nc" id="L72">            preparedStatement.setString(1, student.getFirstName());</span>
+<span class="nc" id="L73">            preparedStatement.setString(2, student.getSurname());</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (student.getGroup() == null) {</span>
+<span class="nc" id="L75">                preparedStatement.setNull(3, Types.NULL);</span>
+            } else {
+<span class="nc" id="L77">                preparedStatement.setLong(3, student.getGroup().getId());</span>
+            }
+<span class="nc" id="L79">            preparedStatement.setLong(4, student.getId());</span>
+
+<span class="nc" id="L81">            preparedStatement.executeUpdate();</span>
+<span class="nc" id="L82">        } catch (SQLException e) {</span>
+<span class="nc" id="L83">            throw new RuntimeException(e);</span>
+<span class="nc" id="L84">        }</span>
+<span class="nc" id="L85">    }</span>
+
+    @Override
+    public boolean deleteById(Long id) {
+        boolean deleteResult;
+<span class="nc" id="L90">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L91">             PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {</span>
+<span class="nc" id="L92">            studentToOptionalClassRepository.deleteById(id);</span>
+<span class="nc" id="L93">            preparedStatement.setLong(1, id);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            deleteResult = preparedStatement.executeUpdate() &gt; 0;</span>
+<span class="nc" id="L95">        } catch (SQLException e) {</span>
+<span class="nc" id="L96">            throw new RuntimeException(e);</span>
+<span class="nc" id="L97">        }</span>
+<span class="nc" id="L98">        return deleteResult;</span>
+    }
+
+    @Override
+    public Optional&lt;Student&gt; findById(Long id) {
+<span class="nc" id="L103">        Student student = null;</span>
+<span class="nc" id="L104">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L105">             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID)) {</span>
+
+<span class="nc" id="L107">            preparedStatement.setLong(1, id);</span>
+
+<span class="nc" id="L109">            ResultSet resultSet = preparedStatement.executeQuery();</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">            if (resultSet.next()) {</span>
+<span class="nc" id="L111">                student = createStudent(resultSet);</span>
+            }
+<span class="nc" id="L113">        } catch (SQLException e) {</span>
+<span class="nc" id="L114">            throw new RuntimeException(e);</span>
+<span class="nc" id="L115">        }</span>
+<span class="nc" id="L116">        return Optional.ofNullable(student);</span>
+    }
+
+
+    @Override
+    public boolean exitsById(Long id) {
+<span class="nc" id="L122">        boolean isExists = false;</span>
+<span class="nc" id="L123">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L124">             PreparedStatement preparedStatement = connection.prepareStatement(EXIST_BY_ID)) {</span>
+
+<span class="nc" id="L126">            preparedStatement.setLong(1, id);</span>
+
+<span class="nc" id="L128">            ResultSet resultSet = preparedStatement.executeQuery();</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (resultSet.next()) {</span>
+<span class="nc" id="L130">                isExists = resultSet.getBoolean(1);</span>
+            }
+<span class="nc" id="L132">        } catch (SQLException e) {</span>
+<span class="nc" id="L133">            throw new RuntimeException(e);</span>
+<span class="nc" id="L134">        }</span>
+<span class="nc" id="L135">        return isExists;</span>
+    }
+
+    private Student createStudent(ResultSet resultSet) throws SQLException {
+<span class="nc" id="L139">        Long userId = resultSet.getLong(&quot;student_id&quot;);</span>
+<span class="nc" id="L140">        Group group = groupRepository.findById(resultSet.getLong(&quot;group_id&quot;)).orElse(null);</span>
+
+<span class="nc" id="L142">        return new Student(</span>
+                userId,
+<span class="nc" id="L144">                resultSet.getString(&quot;student_name&quot;),</span>
+<span class="nc" id="L145">                resultSet.getString(&quot;student_surname&quot;),</span>
+                group,
+                null
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

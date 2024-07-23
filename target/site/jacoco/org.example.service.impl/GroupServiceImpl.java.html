@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GroupServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">REST_DZ</a> &gt; <a href="index.source.html" class="el_package">org.example.service.impl</a> &gt; <span class="el_source">GroupServiceImpl.java</span></div><h1>GroupServiceImpl.java</h1><pre class="source lang-java linenums">package org.example.service.impl;
+
+import org.example.entity.Group;
+import org.example.repository.Interfaces.GroupRepository;
+import org.example.repository.impl.GroupRepositoryImpl;
+import org.example.service.Interfaces.GroupService;
+import org.example.servlet.dto.GroupIncomingDto;
+import org.example.servlet.dto.GroupOutGoingDto;
+import org.example.servlet.dto.GroupUpdateDto;
+import org.example.servlet.mapper.Interfaces.GroupDtoMapper;
+import org.example.servlet.mapper.impl.GroupDtoMapperImpl;
+
+public class GroupServiceImpl implements GroupService {
+<span class="nc" id="L14">    private GroupRepository groupRepository = GroupRepositoryImpl.getInstance();</span>
+    private static GroupService instance;
+<span class="nc" id="L16">    private final GroupDtoMapper roleDtoMapper = GroupDtoMapperImpl.getInstance();</span>
+
+
+<span class="nc" id="L19">    private GroupServiceImpl() {</span>
+<span class="nc" id="L20">    }</span>
+
+    public static synchronized GroupService getInstance() {
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L24">            instance = new GroupServiceImpl();</span>
+        }
+<span class="nc" id="L26">        return instance;</span>
+    }
+
+    @Override
+    public GroupOutGoingDto save(GroupIncomingDto roleDto) {
+<span class="nc" id="L31">        Group role = roleDtoMapper.map(roleDto);</span>
+<span class="nc" id="L32">        role = groupRepository.insert(role);</span>
+<span class="nc" id="L33">        return roleDtoMapper.map(role);</span>
+    }
+
+    @Override
+    public void update(GroupUpdateDto roleUpdateDto) throws RuntimeException {
+<span class="nc" id="L38">        checkRoleExist(roleUpdateDto.getId());</span>
+<span class="nc" id="L39">        Group role = roleDtoMapper.map(roleUpdateDto);</span>
+<span class="nc" id="L40">        groupRepository.update(role);</span>
+<span class="nc" id="L41">    }</span>
+
+    @Override
+    public GroupOutGoingDto findById(Long roleId) throws RuntimeException {
+<span class="nc" id="L45">        Group role = groupRepository.findById(roleId).orElseThrow(() -&gt;</span>
+<span class="nc" id="L46">                new RuntimeException(&quot;Role not found.&quot;));</span>
+<span class="nc" id="L47">        return roleDtoMapper.map(role);</span>
+    }
+
+    @Override
+    public boolean delete(Long roleId) throws RuntimeException {
+<span class="nc" id="L52">        checkRoleExist(roleId);</span>
+<span class="nc" id="L53">        return groupRepository.deleteById(roleId);</span>
+    }
+
+    private void checkRoleExist(Long roleId) throws RuntimeException {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (!groupRepository.exitsById(roleId)) {</span>
+<span class="nc" id="L58">            throw new RuntimeException(&quot;Role not found.&quot;);</span>
+        }
+<span class="nc" id="L60">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

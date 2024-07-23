@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Student.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">REST_DZ</a> &gt; <a href="index.source.html" class="el_package">org.example.entity</a> &gt; <span class="el_source">Student.java</span></div><h1>Student.java</h1><pre class="source lang-java linenums">package org.example.entity;
+
+import java.util.List;
+
+public class Student {
+    private Long id;
+    private String firstName;
+    private String surname;
+    private Group group;
+    private List&lt;OptionalClass&gt; optionalClassList;
+
+<span class="fc" id="L12">    public Student() {</span>
+<span class="fc" id="L13">    }</span>
+
+<span class="fc" id="L15">    public Student(Long id, String firstName, String lastName, Group group, List&lt;OptionalClass&gt; optionalClassList) {</span>
+<span class="fc" id="L16">        this.id = id;</span>
+<span class="fc" id="L17">        this.firstName = firstName;</span>
+<span class="fc" id="L18">        this.surname = lastName;</span>
+<span class="fc" id="L19">        this.group = group;</span>
+<span class="fc" id="L20">        this.optionalClassList = optionalClassList;</span>
+<span class="fc" id="L21">    }</span>
+
+    public Long getId() {
+<span class="fc" id="L24">        return id;</span>
+    }
+
+    public String getFirstName() {
+<span class="fc" id="L28">        return firstName;</span>
+    }
+
+    public void setFirstName(String firstName) {
+<span class="fc" id="L32">        this.firstName = firstName;</span>
+<span class="fc" id="L33">    }</span>
+
+    public String getSurname() {
+<span class="fc" id="L36">        return surname;</span>
+    }
+
+    public void setSurname(String surname) {
+<span class="fc" id="L40">        this.surname = surname;</span>
+<span class="fc" id="L41">    }</span>
+
+    public Group getGroup() {
+<span class="fc" id="L44">        return group;</span>
+    }
+
+    public void setGroup(Group group) {
+<span class="fc" id="L48">        this.group = group;</span>
+<span class="fc" id="L49">    }</span>
+
+
+    public List&lt;OptionalClass&gt; getOptionalClassList() {
+<span class="fc" id="L53">        return optionalClassList;</span>
+    }
+
+    public void setOptionalClassList(List&lt;OptionalClass&gt; optionalClassList) {
+<span class="fc" id="L57">        this.optionalClassList = optionalClassList;</span>
+<span class="fc" id="L58">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

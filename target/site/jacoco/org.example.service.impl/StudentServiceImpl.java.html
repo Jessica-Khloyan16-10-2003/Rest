@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">REST_DZ</a> &gt; <a href="index.source.html" class="el_package">org.example.service.impl</a> &gt; <span class="el_source">StudentServiceImpl.java</span></div><h1>StudentServiceImpl.java</h1><pre class="source lang-java linenums">package org.example.service.impl;
+
+import org.example.entity.Student;
+import org.example.repository.Interfaces.StudentRepository;
+import org.example.repository.impl.StudentRepositoryImpl;
+import org.example.service.Interfaces.StudentService;
+import org.example.servlet.dto.StudentIncomingDto;
+import org.example.servlet.dto.StudentOutGoingDto;
+import org.example.servlet.dto.StudentUpdateDto;
+import org.example.servlet.mapper.Interfaces.StudentDtoMapper;
+import org.example.servlet.mapper.impl.StudentDtoMapperImpl;
+
+public class StudentServiceImpl implements StudentService {
+<span class="nc" id="L14">    private final StudentRepository userRepository = StudentRepositoryImpl.getInstance();</span>
+<span class="nc" id="L15">    private static final StudentDtoMapper userDtoMapper = StudentDtoMapperImpl.getInstance();</span>
+    private static StudentService instance;
+
+
+<span class="nc" id="L19">    private StudentServiceImpl() {</span>
+<span class="nc" id="L20">    }</span>
+
+    public static synchronized StudentService getInstance() {
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L24">            instance = new StudentServiceImpl();</span>
+        }
+<span class="nc" id="L26">        return instance;</span>
+    }
+
+    private void checkExistUser(Long userId) throws RuntimeException {
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (!userRepository.exitsById(userId)) {</span>
+<span class="nc" id="L31">            throw new RuntimeException(&quot;User not found.&quot;);</span>
+        }
+<span class="nc" id="L33">    }</span>
+
+    @Override
+    public StudentOutGoingDto save(StudentIncomingDto userDto) {
+<span class="nc" id="L37">        Student user = userRepository.insert(userDtoMapper.map(userDto));</span>
+<span class="nc" id="L38">        return userDtoMapper.map(userRepository.findById(user.getId()).orElse(user));</span>
+    }
+
+    @Override
+    public void update(StudentUpdateDto userDto) throws RuntimeException {
+<span class="nc bnc" id="L43" title="All 4 branches missed.">        if (userDto == null || userDto.getId() == null) {</span>
+<span class="nc" id="L44">            throw new IllegalArgumentException();</span>
+        }
+<span class="nc" id="L46">        checkExistUser(userDto.getId());</span>
+<span class="nc" id="L47">        userRepository.update(userDtoMapper.map(userDto));</span>
+<span class="nc" id="L48">    }</span>
+
+    @Override
+    public StudentOutGoingDto findById(Long userId) throws RuntimeException {
+<span class="nc" id="L52">        checkExistUser(userId);</span>
+<span class="nc" id="L53">        Student user = userRepository.findById(userId).orElseThrow();</span>
+<span class="nc" id="L54">        return userDtoMapper.map(user);</span>
+    }
+
+    @Override
+    public void delete(Long userId) throws RuntimeException {
+<span class="nc" id="L59">        checkExistUser(userId);</span>
+<span class="nc" id="L60">        userRepository.deleteById(userId);</span>
+<span class="nc" id="L61">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentIncomingDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">REST_DZ</a> &gt; <a href="index.source.html" class="el_package">org.example.servlet.dto</a> &gt; <span class="el_source">StudentIncomingDto.java</span></div><h1>StudentIncomingDto.java</h1><pre class="source lang-java linenums">package org.example.servlet.dto;
+
+import org.example.entity.Group;
+
+public class StudentIncomingDto {
+    private String firstName;
+    private String surname;
+
+    private Group group;
+
+<span class="nc" id="L11">    public StudentIncomingDto() {</span>
+<span class="nc" id="L12">    }</span>
+
+<span class="nc" id="L14">    public StudentIncomingDto(String firstName, String surname, Group group) {</span>
+<span class="nc" id="L15">        this.firstName = firstName;</span>
+<span class="nc" id="L16">        this.surname = surname;</span>
+<span class="nc" id="L17">        this.group = group;</span>
+<span class="nc" id="L18">    }</span>
+
+    public String getFirstName() {
+<span class="nc" id="L21">        return firstName;</span>
+    }
+
+    public String getSurname() {
+<span class="nc" id="L25">        return surname;</span>
+    }
+
+    public Group getGroup() {
+<span class="nc" id="L29">        return group;</span>
+    }
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,6 @@
+org\example\entity\StudentTest.class
+org\example\entity\StudentToOptionalClassTest.class
+org\example\System\PropertiesTakerTest.class
+org\example\entity\GroupTest.class
+org\example\entity\OptionalClassTest.class
+org\example\repository\impl\GroupRepositoryImplTest.class

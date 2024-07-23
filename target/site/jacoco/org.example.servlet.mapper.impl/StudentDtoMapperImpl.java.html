@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentDtoMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">REST_DZ</a> &gt; <a href="index.source.html" class="el_package">org.example.servlet.mapper.impl</a> &gt; <span class="el_source">StudentDtoMapperImpl.java</span></div><h1>StudentDtoMapperImpl.java</h1><pre class="source lang-java linenums">package org.example.servlet.mapper.impl;
+
+import org.example.entity.Student;
+import org.example.servlet.dto.StudentIncomingDto;
+import org.example.servlet.dto.StudentOutGoingDto;
+import org.example.servlet.dto.StudentUpdateDto;
+import org.example.servlet.mapper.Interfaces.OptionalClassDtoMapper;
+import org.example.servlet.mapper.Interfaces.GroupDtoMapper;
+import org.example.servlet.mapper.Interfaces.StudentDtoMapper;
+
+import java.util.List;
+
+public class StudentDtoMapperImpl implements StudentDtoMapper {
+<span class="nc" id="L14">    private static final GroupDtoMapper groupDtoMapper = GroupDtoMapperImpl.getInstance();</span>
+<span class="nc" id="L15">    private static final OptionalClassDtoMapper optionalClassDtoMapper = OptionalClassDtoMapperImpl.getInstance();</span>
+
+
+    private static StudentDtoMapper instance;
+
+    private StudentDtoMapperImpl() {
+    }
+
+    public static synchronized StudentDtoMapper getInstance() {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L25">            instance = new StudentDtoMapperImpl();</span>
+        }
+<span class="nc" id="L27">        return instance;</span>
+    }
+
+    @Override
+    public Student map(StudentIncomingDto studentDto) {
+<span class="nc" id="L32">        return new Student(</span>
+                null,
+<span class="nc" id="L34">                studentDto.getFirstName(),</span>
+<span class="nc" id="L35">                studentDto.getSurname(),</span>
+<span class="nc" id="L36">                studentDto.getGroup(),</span>
+                null
+        );
+    }
+
+    @Override
+    public Student map(StudentUpdateDto studentDto) {
+<span class="nc" id="L43">        return new Student(</span>
+<span class="nc" id="L44">                studentDto.getId(),</span>
+<span class="nc" id="L45">                studentDto.getFirstName(),</span>
+<span class="nc" id="L46">                studentDto.getSurname(),</span>
+<span class="nc" id="L47">                groupDtoMapper.map(studentDto.getGroup()),</span>
+<span class="nc" id="L48">                optionalClassDtoMapper.mapUpdateList(studentDto.getOptionalClassList())</span>
+        );
+    }
+
+    @Override
+    public StudentOutGoingDto map(Student student) {
+<span class="nc" id="L54">        return new StudentOutGoingDto(</span>
+<span class="nc" id="L55">                student.getId(),</span>
+<span class="nc" id="L56">                student.getFirstName(),</span>
+<span class="nc" id="L57">                student.getSurname(),</span>
+<span class="nc" id="L58">                groupDtoMapper.map(student.getGroup()),</span>
+<span class="nc" id="L59">                optionalClassDtoMapper.map(student.getOptionalClassList())</span>
+        );
+    }
+
+    @Override
+    public List&lt;StudentOutGoingDto&gt; map(List&lt;Student&gt; student) {
+<span class="nc" id="L65">        return student.stream().map(this::map).toList();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

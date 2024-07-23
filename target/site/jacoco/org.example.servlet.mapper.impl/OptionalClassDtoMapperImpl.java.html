@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OptionalClassDtoMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">REST_DZ</a> &gt; <a href="index.source.html" class="el_package">org.example.servlet.mapper.impl</a> &gt; <span class="el_source">OptionalClassDtoMapperImpl.java</span></div><h1>OptionalClassDtoMapperImpl.java</h1><pre class="source lang-java linenums">package org.example.servlet.mapper.impl;
+
+import org.example.entity.OptionalClass;
+import org.example.servlet.dto.OptionalClassIncomingDto;
+import org.example.servlet.dto.OptionalClassOutGoingDto;
+import org.example.servlet.dto.OptionalClassUpdateDto;
+import org.example.servlet.dto.StudentSmallOutGoingDto;
+import org.example.servlet.mapper.Interfaces.OptionalClassDtoMapper;
+
+import java.util.List;
+
+public class OptionalClassDtoMapperImpl implements OptionalClassDtoMapper {
+    private static OptionalClassDtoMapper instance;
+
+    private OptionalClassDtoMapperImpl() {
+    }
+
+    public static synchronized OptionalClassDtoMapper getInstance() {
+<span class="nc bnc" id="L19" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L20">            instance = new OptionalClassDtoMapperImpl();</span>
+        }
+<span class="nc" id="L22">        return instance;</span>
+    }
+
+    @Override
+    public OptionalClass map(OptionalClassIncomingDto dto) {
+<span class="nc" id="L27">        return new OptionalClass(</span>
+                null,
+<span class="nc" id="L29">                dto.getName(),</span>
+                null
+        );
+    }
+
+    @Override
+    public OptionalClassOutGoingDto map(OptionalClass optionalClass) {
+<span class="nc" id="L36">        List&lt;StudentSmallOutGoingDto&gt; userList = optionalClass.getStudentListList()</span>
+<span class="nc" id="L37">                .stream().map(student -&gt; new StudentSmallOutGoingDto(</span>
+<span class="nc" id="L38">                        student.getId(),</span>
+<span class="nc" id="L39">                        student.getFirstName(),</span>
+<span class="nc" id="L40">                        student.getSurname()</span>
+<span class="nc" id="L41">                )).toList();</span>
+
+<span class="nc" id="L43">        return new OptionalClassOutGoingDto(</span>
+<span class="nc" id="L44">                optionalClass.getId(),</span>
+<span class="nc" id="L45">                optionalClass.getName(),</span>
+                userList
+        );
+    }
+
+    @Override
+    public OptionalClass map(OptionalClassUpdateDto updateDto) {
+<span class="nc" id="L52">        return new OptionalClass(</span>
+<span class="nc" id="L53">                updateDto.getId(),</span>
+<span class="nc" id="L54">                updateDto.getName(),</span>
+                null
+        );
+    }
+
+    @Override
+    public List&lt;OptionalClassOutGoingDto&gt; map(List&lt;OptionalClass&gt; optionalClassList) {
+<span class="nc" id="L61">        return optionalClassList.stream().map(this::map).toList();</span>
+    }
+
+    @Override
+    public List&lt;OptionalClass&gt; mapUpdateList(List&lt;OptionalClassUpdateDto&gt; optionalClassList) {
+<span class="nc" id="L66">        return optionalClassList.stream().map(this::map).toList();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

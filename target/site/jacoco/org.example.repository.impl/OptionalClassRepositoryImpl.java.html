@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OptionalClassRepositoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">REST_DZ</a> &gt; <a href="index.source.html" class="el_package">org.example.repository.impl</a> &gt; <span class="el_source">OptionalClassRepositoryImpl.java</span></div><h1>OptionalClassRepositoryImpl.java</h1><pre class="source lang-java linenums">package org.example.repository.impl;
+
+import org.example.db.DBConnector;
+import org.example.db.DBConnectorImpl;
+import org.example.entity.OptionalClass;
+import org.example.repository.Interfaces.OptionalClassRepository;
+
+import java.sql.*;
+import java.util.Optional;
+
+public class OptionalClassRepositoryImpl implements OptionalClassRepository {
+    private static final String INSERT = &quot;INSERT INTO optionalclasses (optionalclass_name) VALUES (?)&quot;;
+    private static final String UPDATE = &quot;UPDATE optionalclasses SET optionalclass_name = ? WHERE optionalclass_id = ?&quot;;
+    private static final String DELETE = &quot;DELETE FROM optionalclasses WHERE optionalclass_id = ?&quot;;
+    private static final String FIND_BY_ID = &quot;SELECT optionalclass_id, optionalclass_name FROM optionalclasses WHERE optionalclass_id = ? LIMIT 1&quot;;
+    private static final String EXIST_BY_ID = &quot;SELECT exists (SELECT 1 FROM optionalclasses WHERE optionalclass_id = ? LIMIT 1)&quot;;
+    private static OptionalClassRepository instance;
+<span class="nc" id="L18">    private final DBConnector connectionManager = DBConnectorImpl.getInstance();</span>
+
+<span class="nc" id="L20">    private OptionalClassRepositoryImpl() {</span>
+<span class="nc" id="L21">    }</span>
+
+    public static synchronized OptionalClassRepository getInstance() {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L25">            instance = new OptionalClassRepositoryImpl();</span>
+        }
+<span class="nc" id="L27">        return instance;</span>
+    }
+
+    private static OptionalClass createOptionalClass(ResultSet resultSet) throws SQLException {
+        OptionalClass optionalClass;
+<span class="nc" id="L32">        optionalClass = new OptionalClass(</span>
+<span class="nc" id="L33">                resultSet.getLong(&quot;optionalclass_id&quot;),</span>
+<span class="nc" id="L34">                resultSet.getString(&quot;optionalclass_name&quot;),</span>
+                null);
+<span class="nc" id="L36">        return optionalClass;</span>
+    }
+
+    @Override
+    public OptionalClass insert(OptionalClass optionalClass) {
+<span class="nc" id="L41">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L42">             PreparedStatement preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {</span>
+
+<span class="nc" id="L44">            preparedStatement.setString(1, optionalClass.getName());</span>
+
+<span class="nc" id="L46">            preparedStatement.executeUpdate();</span>
+
+<span class="nc" id="L48">            ResultSet resultSet = preparedStatement.getGeneratedKeys();</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            if (resultSet.next()) {</span>
+<span class="nc" id="L50">                optionalClass = new OptionalClass(</span>
+<span class="nc" id="L51">                        resultSet.getLong(&quot;optionalclass_id&quot;),</span>
+<span class="nc" id="L52">                        optionalClass.getName(),</span>
+                        null
+                );
+<span class="nc" id="L55">                optionalClass.getStudentListList();</span>
+            }
+<span class="nc" id="L57">        } catch (SQLException e) {</span>
+<span class="nc" id="L58">            throw new RuntimeException(e);</span>
+<span class="nc" id="L59">        }</span>
+
+<span class="nc" id="L61">        return optionalClass;</span>
+    }
+
+    @Override
+    public void update(OptionalClass optionalClass) {
+<span class="nc" id="L66">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L67">             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE);) {</span>
+
+<span class="nc" id="L69">            preparedStatement.setString(1, optionalClass.getName());</span>
+<span class="nc" id="L70">            preparedStatement.setLong(2, optionalClass.getId());</span>
+
+<span class="nc" id="L72">            preparedStatement.executeUpdate();</span>
+<span class="nc" id="L73">        } catch (SQLException e) {</span>
+<span class="nc" id="L74">            throw new RuntimeException(e);</span>
+<span class="nc" id="L75">        }</span>
+<span class="nc" id="L76">    }</span>
+
+    @Override
+    public boolean deleteById(Long id) {
+        boolean deleteResult;
+<span class="nc" id="L81">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L82">             PreparedStatement preparedStatement = connection.prepareStatement(DELETE);) {</span>
+
+<span class="nc" id="L84">            preparedStatement.setLong(1, id);</span>
+
+<span class="nc bnc" id="L86" title="All 2 branches missed.">            deleteResult = preparedStatement.executeUpdate() &gt; 0;</span>
+<span class="nc" id="L87">        } catch (SQLException e) {</span>
+<span class="nc" id="L88">            throw new RuntimeException(e);</span>
+<span class="nc" id="L89">        }</span>
+
+<span class="nc" id="L91">        return deleteResult;</span>
+    }
+
+    @Override
+    public Optional&lt;OptionalClass&gt; findById(Long id) {
+<span class="nc" id="L96">        OptionalClass optionalClass = null;</span>
+<span class="nc" id="L97">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L98">             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID)) {</span>
+
+<span class="nc" id="L100">            preparedStatement.setLong(1, id);</span>
+
+<span class="nc" id="L102">            ResultSet resultSet = preparedStatement.executeQuery();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">            if (resultSet.next()) {</span>
+<span class="nc" id="L104">                optionalClass = createOptionalClass(resultSet);</span>
+            }
+<span class="nc" id="L106">        } catch (SQLException e) {</span>
+<span class="nc" id="L107">            throw new RuntimeException(e);</span>
+<span class="nc" id="L108">        }</span>
+<span class="nc" id="L109">        return Optional.ofNullable(optionalClass);</span>
+    }
+
+    @Override
+    public boolean exitsById(Long id) {
+<span class="nc" id="L114">        boolean isExists = false;</span>
+<span class="nc" id="L115">        try (Connection connection = connectionManager.getConnection();</span>
+<span class="nc" id="L116">             PreparedStatement preparedStatement = connection.prepareStatement(EXIST_BY_ID)) {</span>
+
+<span class="nc" id="L118">            preparedStatement.setLong(1, id);</span>
+
+<span class="nc" id="L120">            ResultSet resultSet = preparedStatement.executeQuery();</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (resultSet.next()) {</span>
+<span class="nc" id="L122">                isExists = resultSet.getBoolean(1);</span>
+            }
+<span class="nc" id="L124">        } catch (SQLException e) {</span>
+<span class="nc" id="L125">            throw new RuntimeException(e);</span>
+<span class="nc" id="L126">        }</span>
+<span class="nc" id="L127">        return isExists;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
